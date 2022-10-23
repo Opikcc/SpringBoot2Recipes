@@ -8,5 +8,11 @@
     <h1 th:text="#{main.title}">Library</h1>
     
     <a th:href="@{/books.html}" href="#" th:text="#{index.books.link}">List of books</a>
+    
+    <h3>Language</h3>
+    <div>
+      <a href="?locale=nl" th:text="#{main.language.nl}">NL</a>
+      <a href="?locale=en" th:text="#{main.language.en}">EN</a>
+    </div>
   </body>
 </html>

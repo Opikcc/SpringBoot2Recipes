@@ -7,9 +7,15 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
+import org.springframework.web.servlet.LocaleResolver;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
+import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
 @SpringBootApplication
-public class SpringMvcApplication {
+public class SpringMvcApplication implements WebMvcConfigurer {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringMvcApplication.class, args);
@@ -27,5 +33,68 @@ public class SpringMvcApplication {
   @Bean
   public CustomizedErrorAttributes errorAttributes() {
     return new CustomizedErrorAttributes();
+  }
+  
+  // Resolving locale by an HTTP Request Header
+  /*
+  @Bean
+  public LocaleResolver localeResolver() {
+    return new AcceptHeaderLocaleResolver();
+  }
+  */
+  
+  // Resolving locale by a Session Attribute
+  /*
+  @Bean
+  public LocaleResolver localeResolver() {
+    SessionLocaleResolver localeResolver = new SessionLocaleResolver();
+    localeResolver.setDefaultLocale(new Locale("en"));
+    return localeResolver;
+  }
+  */
+  
+  // Resolving locale by a Cookie
+  /*
+  @Bean
+  public LocaleResolver localeResolver() {
+    return new CookieLocaleResolver();
+  }
+  */
+  
+  // Resolving locale by a Cookie
+  /*
+  @Bean
+  public LocaleResolver localeResolver() {
+    CookieLocaleResolver cookieLocaleResolver = new CookieLocaleResolver();
+    cookieLocaleResolver.setCookieName("language");
+    cookieLocaleResolver.setCookieMaxAge(3600);
+    cookieLocaleResolver.setDefaultLocale(new Locale("en"));
+    return new CookieLocaleResolver();
+  }
+  */
+  
+  // Resolving locale Using a Fixed Locale
+  /*
+  @Bean
+  public LocaleResolver localeResolver() {
+    FixedLocaleResolver cookieLocaleResolver = new FixedLocaleResolver();
+    cookieLocaleResolver.setDefaultLocale(new Locale("en"));
+    return cookieLocaleResolver;
+  }
+  */
+  
+  @Override
+  public void addInterceptors(InterceptorRegistry registry) {
+    registry.addInterceptor(localeChangeInterceptor());
+  }
+  
+  @Bean
+  public LocaleChangeInterceptor localeChangeInterceptor() {
+    return new LocaleChangeInterceptor();
+  }
+  
+  @Bean
+  public LocaleResolver localeResolver() {
+    return new CookieLocaleResolver();
   }
 }
