@@ -3,14 +3,20 @@ package com.deapika.SpringMVC;
 import com.deapika.SpringMVC.library.Book;
 import com.deapika.SpringMVC.library.BookService;
 import com.deapika.SpringMVC.library.CustomizedErrorAttributes;
+import org.apache.catalina.connector.Connector;
+import org.apache.tomcat.util.descriptor.web.SecurityCollection;
+import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.springframework.web.servlet.i18n.AcceptHeaderLocaleResolver;
 import org.springframework.web.servlet.i18n.CookieLocaleResolver;
 import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 
@@ -96,5 +102,49 @@ public class SpringMvcApplication implements WebMvcConfigurer {
   @Bean
   public LocaleResolver localeResolver() {
     return new CookieLocaleResolver();
+  }
+  
+  @Bean
+  public TomcatServletWebServerFactory tomcatServletWebServerFactory() {
+    var factory = new TomcatServletWebServerFactory();
+    factory.addAdditionalTomcatConnectors(httpConnector());
+    factory.addContextCustomizers(securityCustomizer());
+    return factory;
+  }
+  
+  // If Using BeanProcessor
+  /*
+  public BeanPostProcessor addHttpConnectorProcessor() {
+    return new BeanPostProcessor() {
+      @Override
+      public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+        if (bean instanceof TomcatServletWebServerFactory) {
+          var factory = (TomcatServletWebServerFactory) bean;
+          factory.addAdditionalTomcatConnectors(httpConnector());
+        }
+        return bean;
+      }
+    };
+  }
+  */
+  
+  private Connector httpConnector() {
+    var connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
+    connector.setScheme("http");
+    connector.setPort(8080);
+    connector.setSecure(false);
+    connector.setRedirectPort(8443);
+    return connector;
+  }
+  
+  private TomcatContextCustomizer securityCustomizer() {
+    return context -> {
+      var securityConstraint = new SecurityConstraint();
+      securityConstraint.setUserConstraint("CONFIDENTIAL");
+      var collection = new SecurityCollection();
+      collection.addPattern("/*");
+      securityConstraint.addCollection(collection);
+      context.addConstraint(securityConstraint);
+    };
   }
 }
