@@ -6,8 +6,6 @@ import com.deapika.SpringMVC.library.CustomizedErrorAttributes;
 import org.apache.catalina.connector.Connector;
 import org.apache.tomcat.util.descriptor.web.SecurityCollection;
 import org.apache.tomcat.util.descriptor.web.SecurityConstraint;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -23,9 +21,9 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
 @SpringBootApplication
 public class SpringMvcApplication implements WebMvcConfigurer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SpringMvcApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SpringMvcApplication.class, args);
+  }
 
   @Bean
   public ApplicationRunner booksInitializer(BookService bookService) {
@@ -35,20 +33,19 @@ public class SpringMvcApplication implements WebMvcConfigurer {
       bookService.create(new Book("9780618260300", "The Hobbit", "J.R.R. Tolkien"));
     };
   }
-  
+
   @Bean
   public CustomizedErrorAttributes errorAttributes() {
     return new CustomizedErrorAttributes();
   }
-  
+
   // Resolving locale by an HTTP Request Header
   /*
   @Bean
   public LocaleResolver localeResolver() {
     return new AcceptHeaderLocaleResolver();
   }
-  */
-  
+   */
   // Resolving locale by a Session Attribute
   /*
   @Bean
@@ -57,16 +54,14 @@ public class SpringMvcApplication implements WebMvcConfigurer {
     localeResolver.setDefaultLocale(new Locale("en"));
     return localeResolver;
   }
-  */
-  
+   */
   // Resolving locale by a Cookie
   /*
   @Bean
   public LocaleResolver localeResolver() {
     return new CookieLocaleResolver();
   }
-  */
-  
+   */
   // Resolving locale by a Cookie
   /*
   @Bean
@@ -77,8 +72,7 @@ public class SpringMvcApplication implements WebMvcConfigurer {
     cookieLocaleResolver.setDefaultLocale(new Locale("en"));
     return new CookieLocaleResolver();
   }
-  */
-  
+   */
   // Resolving locale Using a Fixed Locale
   /*
   @Bean
@@ -87,23 +81,22 @@ public class SpringMvcApplication implements WebMvcConfigurer {
     cookieLocaleResolver.setDefaultLocale(new Locale("en"));
     return cookieLocaleResolver;
   }
-  */
-  
+   */
   @Override
   public void addInterceptors(InterceptorRegistry registry) {
     registry.addInterceptor(localeChangeInterceptor());
   }
-  
+
   @Bean
   public LocaleChangeInterceptor localeChangeInterceptor() {
     return new LocaleChangeInterceptor();
   }
-  
+
   @Bean
   public LocaleResolver localeResolver() {
     return new CookieLocaleResolver();
   }
-  
+
   @Bean
   public TomcatServletWebServerFactory tomcatServletWebServerFactory() {
     var factory = new TomcatServletWebServerFactory();
@@ -111,7 +104,7 @@ public class SpringMvcApplication implements WebMvcConfigurer {
     factory.addContextCustomizers(securityCustomizer());
     return factory;
   }
-  
+
   // If Using BeanProcessor
   /*
   public BeanPostProcessor addHttpConnectorProcessor() {
@@ -126,8 +119,7 @@ public class SpringMvcApplication implements WebMvcConfigurer {
       }
     };
   }
-  */
-  
+   */
   private Connector httpConnector() {
     var connector = new Connector(TomcatServletWebServerFactory.DEFAULT_PROTOCOL);
     connector.setScheme("http");
@@ -136,7 +128,7 @@ public class SpringMvcApplication implements WebMvcConfigurer {
     connector.setRedirectPort(8443);
     return connector;
   }
-  
+
   private TomcatContextCustomizer securityCustomizer() {
     return context -> {
       var securityConstraint = new SecurityConstraint();
