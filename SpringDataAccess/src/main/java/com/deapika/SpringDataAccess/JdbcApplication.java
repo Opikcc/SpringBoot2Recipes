@@ -1,8 +1,10 @@
 package com.deapika.SpringDataAccess;
 
-import com.deapika.SpringDataAccess.jdbc.CustomerRepository;
+import com.deapika.SpringDataAccess.jpa.CustomerRepository;
+import com.deapika.SpringDataAccess.jpa.CustomerRepositoryCRUD;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -94,6 +96,7 @@ class CustomerLister implements ApplicationRunner {
 */
 
 // Using Repository and RowMapper
+/*
 @Component
 class CustomerLister implements ApplicationRunner {
   
@@ -101,6 +104,47 @@ class CustomerLister implements ApplicationRunner {
   private final CustomerRepository customers;
   
   CustomerLister(CustomerRepository customers) {
+    this.customers = customers;
+  }
+  
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    
+    customers.findAll()
+            .forEach(customer -> logger.info("{}", customer));
+  }
+}
+*/
+
+// Using Hibernate
+/*
+@Component
+class CustomerLister implements ApplicationRunner {
+  
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final CustomerRepository customers;
+  
+  CustomerLister(@Qualifier("JpaCustomerRepository") CustomerRepository customers) {
+    this.customers = customers;
+  }
+  
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    
+    customers.findAll()
+            .forEach(customer -> logger.info("{}", customer));
+  }
+}
+*/
+
+// Using Spring Data JPA CRUD
+@Component
+class CustomerLister implements ApplicationRunner {
+  
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final CustomerRepositoryCRUD customers;
+  
+  CustomerLister(CustomerRepositoryCRUD customers) {
     this.customers = customers;
   }
   
