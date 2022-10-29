@@ -1,6 +1,6 @@
 package com.deapika.SpringDataAccess;
 
-import javax.sql.DataSource;
+import com.deapika.SpringDataAccess.jdbc.CustomerRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationArguments;
@@ -40,6 +40,7 @@ class TableLister implements ApplicationRunner {
 }
 */
 
+/*
 @Component
 class CustomerLister implements ApplicationRunner {
   
@@ -63,5 +64,50 @@ class CustomerLister implements ApplicationRunner {
                 rs.getString(3));
       }
     }
+  }
+}
+*/
+
+// Uaing JDBC Template
+/*
+@Component
+class CustomerLister implements ApplicationRunner {
+  
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final JdbcTemplate jdbc;
+  
+  CustomerLister(JdbcTemplate jdbc) {
+    this.jdbc = jdbc;
+  }
+  
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    var query = "SELECT id, name, email FROM customer";
+    jdbc.query(query, rs -> {
+      logger.info("Customer [id={}, name={}, email={}]",
+                  rs.getLong(1),
+                  rs.getString(2),
+                  rs.getString(3));
+    });
+  }
+}
+*/
+
+// Using Repository and RowMapper
+@Component
+class CustomerLister implements ApplicationRunner {
+  
+  private final Logger logger = LoggerFactory.getLogger(getClass());
+  private final CustomerRepository customers;
+  
+  CustomerLister(CustomerRepository customers) {
+    this.customers = customers;
+  }
+  
+  @Override
+  public void run(ApplicationArguments args) throws Exception {
+    
+    customers.findAll()
+            .forEach(customer -> logger.info("{}", customer));
   }
 }
