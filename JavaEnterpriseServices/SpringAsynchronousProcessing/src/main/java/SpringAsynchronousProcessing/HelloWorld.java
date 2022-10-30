@@ -3,6 +3,7 @@ package SpringAsynchronousProcessing;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -20,5 +21,10 @@ public class HelloWorld {
   public void printMessageAsync() throws InterruptedException {
     Thread.sleep(1500);
     logger.info("Asynchronous Processing!!!");
+  }
+  
+  @Scheduled(fixedRate = 4000)
+  public void printMessageScheduled() {
+    logger.info("Hello World, From Spring Boot 2 Scheduled!!!");
   }
 }
